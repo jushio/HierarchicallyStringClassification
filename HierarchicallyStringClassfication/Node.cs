@@ -8,16 +8,16 @@ namespace HierarchicallyStringClassfication
 {
     internal class Node
     {
-        string Str;
-        int NofDescendants = 0;
-        Dictionary<string, Node> Children = new Dictionary<string, Node>();
+        internal string Str;
+        internal int NofDescendants = 0;
+        internal Dictionary<string, Node> Children = new Dictionary<string, Node>();
 
         internal Node(string word)
         {
             Str = word;
         }
 
-        internal void AddNode(IEnumerable<string> strs)
+        internal virtual void AddNode(IEnumerable<string> strs)
         {
             NofDescendants++;
             if (strs.Count() == 0) return;
