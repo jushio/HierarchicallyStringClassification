@@ -15,7 +15,8 @@ namespace HierarchicallyStringClassfication
         {
             NofDescendants++;
             if (strs.Count() == 0) return;
-            if (Int32.TryParse(strs.First(), out int j))
+            int j;
+            if (Int32.TryParse(strs.First(), out j))
             {
                 indices.Add(j);
                 return;
