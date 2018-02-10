@@ -14,77 +14,91 @@ namespace HierarchicallyStringClassfication
             if (false)
                 Test();
 
-            string dataDir = @"./dat";
-            string[] files = System.IO.Directory.GetFiles(
-                dataDir, "*", System.IO.SearchOption.AllDirectories);
-            bool ver0 = false;
-            foreach (var file in files)
+            if (!(args.Length >= 1 || args.Length <= 3))
             {
-                if (ver0)
+                Console.WriteLine("HierarchicallyStringClassfication.exe @fileName [@rowNum] [@depth]");
+                return;
+            }
+            string fileName = args[0];
+            int rowNum = -1;
+            int depth = -1;
+            if (args.Length > 1)
+            {
+                string rowNum_ = args[1];
+                rowNum_ = args[1];
+                if (!int.TryParse(rowNum_, out rowNum))
                 {
-                    Console.WriteLine(file);
-                    StreamWriter sw = new StreamWriter(
-                    file + "out.txt", // 出力先ファイル名
-                      true, // 追加書き込み
-                    System.Text.Encoding.GetEncoding("Shift_JIS")); // 文字コード
-                    TextWriter tmp = Console.Out; // 標準出力の保持
-                    Console.SetOut(sw); // 出力先（Outプロパティ）を設定
-
-                    ClassifyFile(file, 4);
-                    Console.SetOut(tmp); //戻す
-                    sw.Close();
+                    Console.WriteLine("@rowNum is not a number.");
                 }
-                ClassifyFileToFiles(file, 3);
+            }
+            if (args.Length > 2)
+            {
+                string depth_ = args[2];
+                depth_ = args[2];
+                if (!int.TryParse(depth_, out depth))
+                {
+                    Console.WriteLine("@depth is not a number.");
+                }
+            }
+            try
+            {
+                ClassifyFile2(fileName, rowNum: rowNum, limit: depth);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return;
             }
         }
+
 
         static void ClassifyFile(string fileName, int limit = int.MaxValue)
         {
             var root = new Node("");
             // Read the file and display it line by line.  
-            System.IO.StreamReader file =
-                new System.IO.StreamReader(fileName);
-            string line;
-            var delims = new char[] { '/', '_' };
-            while ((line = file.ReadLine()) != null)
+            using (System.IO.StreamReader file =
+                new System.IO.StreamReader(fileName))
             {
-                root.AddNode(line.Split(delims));
+                string line;
+                var delims = new char[] { '/', '_' };
+                while ((line = file.ReadLine()) != null)
+                {
+                    root.AddNode(line.Split(delims));
+                }
             }
             root.ListUp(0, limit);
         }
 
-        static void ClassifyFileToFiles(string fileName, int limit = int.MaxValue)
+        static void ClassifyFile2(string fileName, int rowNum = -1, int limit = int.MaxValue)
         {
-            var root = new IndexedNode("");
+            var root = new IndexedNode(null, "");
             // Read the file and display it line by line.  
-            System.IO.StreamReader file =
-                new System.IO.StreamReader(fileName);
-            string line;
-            var delims = new char[] { '/', '_', '[' , ']'};
-            while ((line = file.ReadLine()) != null)
+            using (System.IO.StreamReader file =
+               new System.IO.StreamReader(fileName))
             {
-                var defs = line.Split(' ');
-                root.AddNode(defs[1].Split(delims));
+                string line;
+                var delims = new char[] { '/', '_', '[', ']' };
+                while ((line = file.ReadLine()) != null)
+                {
+                    string str = line;
+                    if (rowNum >= 0)
+                    {
+                        var defs = line.Split(' ');
+                        if (!(rowNum < defs.Length))
+                        {
+                            StringBuilder sb = new StringBuilder();
+                            sb.AppendLine("Exception: row number " + rowNum + " is over the number of columns in the entry.");
+                            sb.AppendLine("---");
+                            sb.AppendLine(line);
+                            sb.AppendLine("---");
+                            throw new Exception(sb.ToString());
+                        }
+                        str = defs[rowNum];
+                    }
+                    root.AddNode(str.Split(delims));
+                }
             }
-
-            int cnt = 0;
-            foreach (var child in root.Children)
-            {
-                StreamWriter sw = new StreamWriter(
-    @"" + fileName + "_" + cnt++ + "_out.txt", // 出力先ファイル名
-      true, // 追加書き込み
-    System.Text.Encoding.GetEncoding("Shift_JIS")); // 文字コード
-
-                TextWriter tmp = Console.Out; // 標準出力の保持
-                Console.SetOut(sw); // 出力先（Outプロパティ）を設定
-
-                Console.WriteLine(child.Key);
-
-                child.Value.ListUp(0, limit);
-
-                Console.SetOut(tmp); //戻す
-                sw.Close();
-            }
+            root.ListUp(0, limit);
         }
 
         static void Test()

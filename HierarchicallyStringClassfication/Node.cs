@@ -27,7 +27,7 @@ namespace HierarchicallyStringClassfication
         }
 
         //リストアップする
-        internal void ListUp(int depth = 0, int limit = int.MaxValue)
+        internal virtual void ListUp(int depth = 0, int limit = int.MaxValue)
         {
             if (depth > limit)
                 return;
@@ -36,7 +36,7 @@ namespace HierarchicallyStringClassfication
             Children.Values.ToList().ForEach(n => n.ListUp(depth+1, limit));
         }
 
-        internal void Print()
+        internal virtual void Print()
         {
             Console.WriteLine(Str + " : " + NofDescendants);
         }
