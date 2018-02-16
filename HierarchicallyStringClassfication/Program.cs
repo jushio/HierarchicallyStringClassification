@@ -14,7 +14,7 @@ namespace HierarchicallyStringClassfication
             if (false)
                 Test();
 
-            if (!(args.Length >= 1 || args.Length <= 3))
+            if (!(args.Length >= 1 && args.Length <= 3))
             {
                 Console.WriteLine("HierarchicallyStringClassfication.exe @fileName [@rowNum] [@depth]");
                 return;
@@ -40,6 +40,7 @@ namespace HierarchicallyStringClassfication
                     Console.WriteLine("@depth is not a number.");
                 }
             }
+            depth = (depth < 0) ? int.MaxValue : depth; 
             try
             {
                 ClassifyFile2(fileName, rowNum: rowNum, limit: depth);
