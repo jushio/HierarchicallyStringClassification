@@ -61,7 +61,7 @@ s3: `core/ex_insts_regs[0]`
 --"ex"
 ---"pc"
 ----"regs"
------"1"
+-----"1" -> s1
 ```
 
 ### s2 の分類
@@ -71,14 +71,14 @@ s3: `core/ex_insts_regs[0]`
 
 2. 分類
 
-```text:clustering of s1
+```text:clustering of s1, s2
 [root]
 -"core"
 --"ex"
 ---"pc"
 ----"regs"
------"1"
------"2"
+-----"1" -> s1
+-----"2" -> s2
 ```
 
 ### s3 の分類
@@ -89,17 +89,17 @@ s3: `core/ex_insts_regs[0]`
 
 2. 分類
 
-```text:clustering of s1
+```text:clustering of s1, s2, s3
 [root]
 -"core"
 --"ex"
 ---"insts"
 ----"regs"
------"0"
+-----"0" -> s3
 ---"pc"
 ----"regs"
------"1"
------"2"
+-----"1" -> s1
+-----"2" -> s2
 ```
 
 
